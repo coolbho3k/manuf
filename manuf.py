@@ -51,7 +51,7 @@ class MacParser(object):
         self._masks = {}
 
         # Build mask -> result dict
-        for line in iter(self._manuf_file.readline, ''):
+        for line in self._manuf_file:
             com = line.split('#', 1)
             arr = com[0].split()
 
