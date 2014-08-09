@@ -20,11 +20,14 @@
 import re
 import sys
 
-from collections     import defaultdict
+from collections      import defaultdict
 try:
-    from cStringIO   import StringIO
+    from cStringIO    import StringIO
 except ImportError:
-    from StringIO    import StringIO
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io       import StringIO
 
 class MacParser(object):
     """Class that contains a parser for Wireshark's OUI database.
@@ -93,7 +96,7 @@ class MacParser(object):
         mac_int = self._get_mac_int(mac_str)
 
         # If the user only gave us X bits, check X bits. No partial matching!
-        for mask in xrange(self._bits_left(mac_str), 48):
+        for mask in range(self._bits_left(mac_str), 48):
             result = self._masks.get((mask, mac_int >> mask))
             if result:
                 return result
@@ -149,4 +152,4 @@ if __name__ == "__main__":
         print("    Usage: manuf.py <MAC address>")
     else:
         parser = MacParser()
-        print parser.get_all(sys.argv[1])
+        print(parser.get_all(sys.argv[1]))

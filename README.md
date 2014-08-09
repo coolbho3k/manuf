@@ -15,7 +15,7 @@ Written by Michael Huang.
 
 Copying
 ---
-This library does not link to Wireshark's manuf database, so I have chose to
+This library does not link to Wireshark's manuf database, so I have chosen to
 publish it under the LGPLv3 instead of the GPLv2. The manuf database is provided
 for your convenience.
 
@@ -24,4 +24,5 @@ for your convenience.
 
 The latest version of the manuf database can be found in the
 [Wireshark git repository](https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf).
-The database there is updated about once a week.
+The database there is updated about once a week, so you may want to grab the
+latest version to use.
