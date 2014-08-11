@@ -30,6 +30,8 @@ except ImportError:
     except ImportError:
         from io       import StringIO
 
+vendor = namedtuple('Vendor', ['manuf', 'comment'])
+
 class MacParser(object):
     """Class that contains a parser for Wireshark's OUI database.
 
@@ -44,9 +46,6 @@ class MacParser(object):
          attr1 (str): Location of the manuf database file.
 
     """
-
-    vendor = namedtuple('Vendor', ['manuf', 'comment'])
-
     def  __init__(self, manuf_name="manuf"):
         with open(manuf_name, 'r+') as f:
             self._manuf_file = StringIO(f.read())
@@ -72,9 +71,9 @@ class MacParser(object):
                     mask = mask_spec
 
             if len(com) > 1:
-                result = self.vendor(manuf = arr[1], comment = com[1].strip())
+                result = vendor(manuf = arr[1], comment = com[1].strip())
             else:
-                result = self.vendor(manuf = arr[1], comment = None)
+                result = vendor(manuf = arr[1], comment = None)
 
             self._masks[(mask,  mac_int >> mask)] = result
 
@@ -102,7 +101,7 @@ class MacParser(object):
             result = self._masks.get((mask, mac_int >> mask))
             if result:
                 return result
-        return self.vendor(manuf = None, comment = None)
+        return vendor(manuf = None, comment = None)
 
     def get_manuf(self, mac):
         """Returns manufacturer from a MAC address.
