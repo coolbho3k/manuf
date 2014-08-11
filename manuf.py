@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# manuf.py: Parser utility for Wireshark's OUI database.
+# manuf.py: Parser library for Wireshark's OUI database.
 # Copyright (c) 2014 Michael Huang
 #
 # This library is free software: you can redistribute it and/or

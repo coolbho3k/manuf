@@ -1,7 +1,7 @@
 manuf.py
 ===
 
-Parser utility for Wireshark's OUI database.
+Parser library for Wireshark's OUI database.
 ---
 
 Converts MAC addresses into a manufacturer using Wireshark's OUI database.
@@ -28,9 +28,10 @@ Usage
 
 Copying
 ---
-This library does not link to Wireshark's manuf database, so I have chosen to
-publish it under the LGPLv3 instead of the GPLv2. The manuf database is provided
-for your convenience in this repository, but will not be updated often.
+This library does not link to Wireshark's manuf database; it merely parses it,
+so I have chosen to publish it under the LGPLv3 instead of the GPLv2.
+The manuf database is provided for your convenience in this repository,
+but will not be updated often.
 
 * License for Python library: LGPLv3
 * License for manuf database: GPLv2
