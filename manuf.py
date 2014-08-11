@@ -102,7 +102,7 @@ class MacParser(object):
             result = self._masks.get((mask, mac_int >> mask))
             if result:
                 return result
-        return (None, None)
+        return self.vendor(manuf = None, comment = None)
 
     def get_manuf(self, mac):
         """Returns manufacturer from a MAC address.
