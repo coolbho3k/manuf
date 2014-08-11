@@ -30,6 +30,7 @@ except ImportError:
     except ImportError:
         from io       import StringIO
 
+# Vendor tuple
 vendor = namedtuple('Vendor', ['manuf', 'comment'])
 
 class MacParser(object):
@@ -80,13 +81,13 @@ class MacParser(object):
         self._manuf_file.close()
 
     def get_all(self, mac):
-        """Get a tuple containing (manufacturer, comment) from a MAC address.
+        """Get a Vendor tuple containing (manuf, comment) from a MAC address.
 
         Attributes:
           attr1 (str): MAC address in standard format.
 
         Returns:
-          Tuple containing (manufacturer, comment). Either or both may be None
+          Vendor tuple containing (manuf, comment). Either or both may be None
           if not found.
 
         Raises:
