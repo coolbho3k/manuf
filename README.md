@@ -20,7 +20,7 @@ Usage
     >>> import manuf
     >>> p = manuf.MacParser()
     >>> p.get_all('BC:EE:7B:00:00:00')
-    ('AsustekC', 'ASUSTek COMPUTER INC.')
+    Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
     >>> p.get_manuf('BC:EE:7B:00:00:00')
     'AsustekC'
     >>> p.get_comment('BC:EE:7B:00:00:00')
@@ -30,7 +30,7 @@ Copying
 ---
 This library does not link to Wireshark's manuf database, so I have chosen to
 publish it under the LGPLv3 instead of the GPLv2. The manuf database is provided
-for your convenience.
+for your convenience in this repository, but will not be updated often.
 
 * License for Python library: LGPLv3
 * License for manuf database: GPLv2

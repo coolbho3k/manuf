@@ -21,6 +21,7 @@ import re
 import sys
 
 from collections      import defaultdict
+from collections      import namedtuple
 try:
     from cStringIO    import StringIO
 except ImportError:
@@ -44,8 +45,9 @@ class MacParser(object):
 
     """
 
+    vendor = namedtuple('Vendor', ['manuf', 'comment'])
+
     def  __init__(self, manuf_name="manuf"):
-        self._pattern = re.compile("[-:\.]")
         with open(manuf_name, 'r+') as f:
             self._manuf_file = StringIO(f.read())
         self._masks = {}
@@ -70,9 +72,9 @@ class MacParser(object):
                     mask = mask_spec
 
             if len(com) > 1:
-                result = (arr[1], com[1].strip())
+                result = self.vendor(manuf = arr[1], comment = com[1].strip())
             else:
-                result = (arr[1], None)
+                result = self.vendor(manuf = arr[1], comment = None)
 
             self._masks[(mask,  mac_int >> mask)] = result
 
@@ -115,7 +117,7 @@ class MacParser(object):
           ValueError: If the MAC could not be parsed.
 
         """
-        return self.get_all(mac)[0]
+        return self.get_all(mac).manuf
 
     def get_comment(self, mac):
         """Returns comment from a MAC address.
@@ -130,7 +132,7 @@ class MacParser(object):
           ValueError: If the MAC could not be parsed.
 
         """
-        return self.get_all(mac)[1]
+        return self.get_all(mac).comment
 
     # Gets the integer representation of a stripped mac string
     def _get_mac_int(self, mac_str):
@@ -142,6 +144,7 @@ class MacParser(object):
 
     # Strips the MAC address of '-', ':', and '.' characters
     _strip_mac = lambda self, mac: self._pattern.sub("", mac)
+    _pattern = re.compile("[-:\.]")
 
     # Gets the number of bits left in a mac string
     _bits_left = lambda self, mac_str: 48 - 4 * len(mac_str)
