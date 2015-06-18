@@ -151,7 +151,11 @@ class MacParser(object):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("manuf.py: Parser utility for Wireshark's OUI database.")
-        print("    Usage: manuf.py <MAC address>")
+        print("    Usage: manuf.py <mac-address> [<manuf-file-path>]")
+	sys.exit(0)
+    elif len(sys.argv) > 2:
+	parser = MacParser(sys.argv[2])
     else:
-        parser = MacParser()
-        print(parser.get_all(sys.argv[1]))
+	parser = MacParser()
+    print(parser.get_all(sys.argv[1]))
+    sys.exit(0)
