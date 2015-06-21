@@ -102,11 +102,11 @@ class MacParser(object):
         Args:
             mac (str): MAC address in standard format.
 
-         Returns:
+        Returns:
             vendor: Vendor namedtuple containing (manuf, comment). Either or
             both may be None if not found.
 
-         Raises:
+        Raises:
             ValueError: If the MAC could not be parsed.
 
         """
