@@ -33,20 +33,37 @@ except ImportError:
 vendor = namedtuple('Vendor', ['manuf', 'comment'])
 
 class MacParser(object):
-    """Class that contains a parser for Wireshark's OUI database.
-
-       Optimized for quick lookup performance by reading the entire file into
-       memory on initialization. Maps ranges of MAC addresses to manufacturers
-       and comments (descriptions). Contains full support for netmasks and other
-       strange things in the database.
-
-       See https://www.wireshark.org/tools/oui-lookup.html
-
-       Attributes:
-         attr1 (str): Location of the manuf database file.
-
-    """
     def  __init__(self, manuf_name="manuf"):
+        """Class that contains a parser for Wireshark's OUI database.
+
+        Optimized for quick lookup performance by reading the entire file into
+        memory on initialization. Maps ranges of MAC addresses to manufacturers and
+        comments (descriptions). Contains full support for netmasks and other
+        strange things in the database.
+
+        See https://www.wireshark.org/tools/oui-lookup.html
+
+        Args:
+            manuf_name (str): Location of the manuf database file. Defaults to
+            "manuf" in the same directory.
+
+        Raises:
+            IOError: If manuf file could not be found.
+
+        """
+        self.refresh(manuf_name)
+
+    def refresh(self, manuf_name = "manuf"):
+        """Refresh/reload manuf database. Call this if database has been updated.
+
+        Args:
+            manuf_name (str): Location of the manuf data base file. Defaults to
+            "manuf" in the same directory.
+
+        Raises:
+            IOError: If manuf file could not be found.
+
+        """
         with open(manuf_name, 'r+') as f:
             self._manuf_file = StringIO(f.read())
         self._masks = {}
@@ -80,17 +97,17 @@ class MacParser(object):
         self._manuf_file.close()
 
     def get_all(self, mac):
-        """Get a Vendor tuple containing (manuf, comment) from a MAC address.
+        """Get a vendor tuple containing (manuf, comment) from a MAC address.
 
-        Attributes:
-          attr1 (str): MAC address in standard format.
+        Args:
+            mac (str): MAC address in standard format.
 
-        Returns:
-          Vendor tuple containing (manuf, comment). Either or both may be None
-          if not found.
+         Returns:
+            vendor: Vendor namedtuple containing (manuf, comment). Either or
+            both may be None if not found.
 
-        Raises:
-          ValueError: If the MAC could not be parsed.
+         Raises:
+            ValueError: If the MAC could not be parsed.
 
         """
         mac_str = self._strip_mac(mac)
@@ -106,14 +123,14 @@ class MacParser(object):
     def get_manuf(self, mac):
         """Returns manufacturer from a MAC address.
 
-        Attributes:
-          attr1 (str): MAC address in standard format.
+        Args:
+            mac (str): MAC address in standard format.
 
         Returns:
-          String containing manufacturer, or None if not found.
+            string: String containing manufacturer, or None if not found.
 
         Raises:
-          ValueError: If the MAC could not be parsed.
+            ValueError: If the MAC could not be parsed.
 
         """
         return self.get_all(mac).manuf
@@ -121,14 +138,14 @@ class MacParser(object):
     def get_comment(self, mac):
         """Returns comment from a MAC address.
 
-        Attributes:
-          attr1 (str): MAC address in standard format.
+        Args:
+            mac (str): MAC address in standard format.
 
         Returns:
-          String containing comment, or None if not found.
+            string: String containing comment, or None if not found.
 
         Raises:
-          ValueError: If the MAC could not be parsed.
+            ValueError: If the MAC could not be parsed.
 
         """
         return self.get_all(mac).comment
@@ -152,10 +169,10 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("manuf.py: Parser utility for Wireshark's OUI database.")
         print("    Usage: manuf.py <mac-address> [<manuf-file-path>]")
-	sys.exit(0)
+        sys.exit(0)
     elif len(sys.argv) > 2:
-	parser = MacParser(sys.argv[2])
+        parser = MacParser(sys.argv[2])
     else:
-	parser = MacParser()
+        parser = MacParser()
     print(parser.get_all(sys.argv[1]))
     sys.exit(0)
