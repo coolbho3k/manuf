@@ -20,7 +20,7 @@
 import re
 import sys
 
-from collections      import defaultdict, namedtuple
+from collections      import namedtuple
 try:
     from cStringIO    import StringIO
 except ImportError:
