@@ -51,9 +51,10 @@ class MacParser(object):
             IOError: If manuf file could not be found.
 
         """
-        self.refresh(manuf_name)
+        self._manuf_name = manuf_name
+        self.refresh()
 
-    def refresh(self, manuf_name = "manuf"):
+    def refresh(self, manuf_name = self._manuf_name):
         """Refresh/reload manuf database. Call this if database has been updated.
 
         Args:
