@@ -33,7 +33,7 @@ except ImportError:
 vendor = namedtuple('Vendor', ['manuf', 'comment'])
 
 class MacParser(object):
-    def  __init__(self, manuf_name="manuf"):
+    def  __init__(self, manuf_name = "manuf"):
         """Class that contains a parser for Wireshark's OUI database.
 
         Optimized for quick lookup performance by reading the entire file into
