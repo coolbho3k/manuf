@@ -119,9 +119,8 @@ class MacParser(object):
 
         # If the user only gave us X bits, check X bits. No partial matching!
         for mask in range(self._bits_left(mac_str), 48):
-            result = self._masks.get((mask, mac_int >> mask))
-            if result:
-                vendors.append(result)
+            if (mask, mac_int >> mask) in self._masks:
+                vendors.append(self._masks.get((mask, mac_int >> mask)))
                 if len(vendors) >= max:
                     break
         return vendors
