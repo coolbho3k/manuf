@@ -65,7 +65,7 @@ class MacParser(object):
             IOError: If manuf file could not be found.
 
         """
-        if not manuf_name
+        if not manuf_name:
             manuf_name = self._manuf_name
         with open(manuf_name, 'r+') as f:
             self._manuf_file = StringIO(f.read())
