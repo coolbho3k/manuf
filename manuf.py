@@ -54,7 +54,7 @@ class MacParser(object):
         self._manuf_name = manuf_name
         self.refresh()
 
-    def refresh(self, manuf_name = self._manuf_name):
+    def refresh(self, manuf_name = None):
         """Refresh/reload manuf database. Call this if database has been updated.
 
         Args:
@@ -65,6 +65,8 @@ class MacParser(object):
             IOError: If manuf file could not be found.
 
         """
+        if not manuf_name
+            manuf_name = self._manuf_name
         with open(manuf_name, 'r+') as f:
             self._manuf_file = StringIO(f.read())
         self._masks = {}
