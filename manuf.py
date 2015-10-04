@@ -68,11 +68,11 @@ class MacParser(object):
         if not manuf_name:
             manuf_name = self._manuf_name
         with open(manuf_name, 'r+') as f:
-            self._manuf_file = StringIO(f.read())
+            manuf_file = StringIO(f.read())
         self._masks = {}
 
         # Build mask -> result dict
-        for line in self._manuf_file:
+        for line in manuf_file:
             com = line.split('#', 1)
             arr = com[0].split()
 
@@ -97,7 +97,7 @@ class MacParser(object):
 
             self._masks[(mask,  mac_int >> mask)] = result
 
-        self._manuf_file.close()
+        manuf_file.close()
 
     def search(self, mac, max = 1):
         """Search for multiple vendor tuples possibly matching a MAC address.
