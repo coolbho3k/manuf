@@ -96,6 +96,35 @@ class MacParser(object):
 
         self._manuf_file.close()
 
+    def search(self, mac, max = 1):
+        """Search for multiple vendor tuples possibly matching a MAC address.
+
+        Args:
+            mac (str): MAC address in standard format.
+            max (Optional[int]): Maximum results to return. Defaults to 1.
+
+        Returns:
+            List of vendor namedtuples containing (manuf, comment), with closest
+            result first. May be empty if no results found.
+
+        Raises:
+            ValueError: If the MAC could not be parsed.
+
+        """
+        vendors = []
+        mac_str = self._strip_mac(mac)
+        mac_int = self._get_mac_int(mac_str)
+
+        # If the user only gave us X bits, check X bits. No partial matching!
+        for mask in range(self._bits_left(mac_str), 48):
+            if max <= 0:
+                break
+            result = self._masks.get((mask, mac_int >> mask))
+            if result:
+                vendors.append(result)
+                max -= 1
+        return vendors
+
     def get_all(self, mac):
         """Get a vendor tuple containing (manuf, comment) from a MAC address.
 
@@ -110,15 +139,10 @@ class MacParser(object):
             ValueError: If the MAC could not be parsed.
 
         """
-        mac_str = self._strip_mac(mac)
-        mac_int = self._get_mac_int(mac_str)
-
-        # If the user only gave us X bits, check X bits. No partial matching!
-        for mask in range(self._bits_left(mac_str), 48):
-            result = self._masks.get((mask, mac_int >> mask))
-            if result:
-                return result
-        return vendor(manuf = None, comment = None)
+        vendors = self.search(mac)
+        if len(vendors) == 0:
+            return vendor(manuf = None, comment = None)
+        return vendors[0]
 
     def get_manuf(self, mac):
         """Returns manufacturer from a MAC address.
