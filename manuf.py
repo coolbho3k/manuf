@@ -67,7 +67,7 @@ class MacParser(object):
         """
         if not manuf_name:
             manuf_name = self._manuf_name
-        with open(manuf_name, 'r+') as f:
+        with open(manuf_name, 'r') as f:
             manuf_file = StringIO(f.read())
         self._masks = {}
 
