@@ -136,11 +136,11 @@ Copying
 ---
 
 This library does not link to Wireshark's manuf database; it merely parses it,
-so I have chosen to publish it under the LGPLv3 instead of the GPLv2. The manuf
-database is provided for your convenience in this repository, but will not be
-updated often.
+so I have chosen to publish it under the LGPLv3 and Apache License 2.0
+instead of the GPLv2. The manuf database is provided for your convenience in
+this repository, but will not be updated.
 
-* License for Python library: LGPLv3
+* License for Python library: LGPLv3 and Apache License 2.0 (dual licensed)
 * License for manuf database: GPLv2
 
 The latest version of the manuf database can be found in the
