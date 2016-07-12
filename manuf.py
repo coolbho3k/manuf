@@ -14,15 +14,15 @@
 
 import re
 import sys
+from collections import namedtuple
 
-from collections      import namedtuple
 try:
-    from cStringIO    import StringIO
+    from cStringIO import StringIO
 except ImportError:
     try:
         from StringIO import StringIO
     except ImportError:
-        from io       import StringIO
+        from io import StringIO
 
 # Vendor tuple
 vendor = namedtuple('Vendor', ['manuf', 'comment'])
@@ -49,7 +49,7 @@ class MacParser(object):
         self._manuf_name = manuf_name
         self.refresh()
 
-    def refresh(self, manuf_name = None):
+    def refresh(self, manuf_name=None):
         """Refresh/reload manuf database. Call this if database has been updated.
 
         Args:
@@ -94,7 +94,7 @@ class MacParser(object):
 
         manuf_file.close()
 
-    def search(self, mac, max = 1):
+    def search(self, mac, max=1):
         """Search for multiple vendor tuples possibly matching a MAC address.
 
         Args:
@@ -179,7 +179,7 @@ class MacParser(object):
             # Fill in missing bits with zeroes
             return int(mac_str, 16) << self._bits_left(mac_str)
         except ValueError:
-            raise ValueError("Could not parse MAC: "+str(mac_str))
+            raise ValueError("Could not parse MAC: {0}".format(mac_str))
 
     # Strips the MAC address of '-', ':', and '.' characters
     _strip_mac = lambda self, mac: self._pattern.sub("", mac)
