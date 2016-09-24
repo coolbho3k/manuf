@@ -33,6 +33,16 @@ On the command line. Make sure manuf is in the same directory:
 
     $ python manuf.py BC:EE:7B:00:00:00
     Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
+    
+Use a manuf file in a custom location:
+
+    $ python manuf.py BC:EE:7B:00:00:00 ~/manuf
+    Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
+
+Automatically update the manuf file from Wireshark's git:
+
+    $ python manuf.py --update BC:EE:7B:00:00:00 ~/manuf
+    Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
 
 Advantages
 ---
