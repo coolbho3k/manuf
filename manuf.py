@@ -14,21 +14,22 @@
 
 import re
 import sys
+from collections import namedtuple
+import urllib2
 
-from collections      import namedtuple
 try:
-    from cStringIO    import StringIO
+    from cStringIO import StringIO
 except ImportError:
     try:
         from StringIO import StringIO
     except ImportError:
-        from io       import StringIO
+        from io import StringIO
 
 # Vendor tuple
 vendor = namedtuple('Vendor', ['manuf', 'comment'])
 
 class MacParser(object):
-    def  __init__(self, manuf_name = "manuf"):
+    def  __init__(self, manuf_name="manuf"):
         """Class that contains a parser for Wireshark's OUI database.
 
         Optimized for quick lookup performance by reading the entire file into
@@ -40,21 +41,22 @@ class MacParser(object):
 
         Args:
             manuf_name (str): Location of the manuf database file. Defaults to
-            "manuf" in the same directory.
+                "manuf" in the same directory.
 
         Raises:
             IOError: If manuf file could not be found.
 
         """
         self._manuf_name = manuf_name
+        self.update()
         self.refresh()
 
-    def refresh(self, manuf_name = None):
+    def refresh(self, manuf_name=None):
         """Refresh/reload manuf database. Call this if database has been updated.
 
         Args:
             manuf_name (str): Location of the manuf data base file. Defaults to
-            "manuf" in the same directory.
+                "manuf" in the same directory.
 
         Raises:
             IOError: If manuf file could not be found.
@@ -62,19 +64,19 @@ class MacParser(object):
         """
         if not manuf_name:
             manuf_name = self._manuf_name
-        with open(manuf_name, 'r') as f:
+        with open(manuf_name, "r") as f:
             manuf_file = StringIO(f.read())
         self._masks = {}
 
         # Build mask -> result dict
         for line in manuf_file:
-            com = line.split('#', 1)
+            com = line.split("#", 1)
             arr = com[0].split()
 
             if len(arr) < 1:
                 continue
 
-            parts = arr[0].split('/')
+            parts = arr[0].split("/")
             mac_str = self._strip_mac(parts[0])
             mac_int = self._get_mac_int(mac_str)
             mask = self._bits_left(mac_str)
@@ -94,7 +96,49 @@ class MacParser(object):
 
         manuf_file.close()
 
-    def search(self, mac, max = 1):
+    def update(self, manuf_url=None, manuf_name=None, refresh=True):
+        """Update the Wireshark OUI database to the latest version.
+
+        Comments
+
+        Args:
+            manuf_url (str): URL pointing to OUI database. Defaults to database
+                located at code.wireshark.org.
+            manuf_name (str): Location to store the new OUI database. Defaults to
+                "manuf" in the same directory.
+            refresh (bool): Refresh the database once updated. Defaults to True.
+                Uses database stored at manuf_name.
+
+        Raises:
+            URLError: If the download fails
+
+        """
+
+        if not manuf_url:
+            manuf_url = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
+        if not manuf_name:
+            manuf_name = self._manuf_name
+
+        # Retrieve the new database
+        try:
+            response = urllib2.urlopen(manuf_url)
+        except urllib2.URLError:
+            raise urllib2.URLError("Failed downloading OUI database")
+
+
+        # Parse the response
+        if response.code is 200:
+            with open(manuf_name, "w") as f:
+                f.write(response.read())
+            if refresh:
+                self.refresh(manuf_name)
+        else:
+            err = "{0} {1}".format(response.code, response.msg)
+            raise urllib2.URLError("Failed downloading database: {0}".format(err))
+
+        response.close()
+
+    def search(self, mac, max=1):
         """Search for multiple vendor tuples possibly matching a MAC address.
 
         Args:
@@ -179,7 +223,7 @@ class MacParser(object):
             # Fill in missing bits with zeroes
             return int(mac_str, 16) << self._bits_left(mac_str)
         except ValueError:
-            raise ValueError("Could not parse MAC: "+str(mac_str))
+            raise ValueError("Could not parse MAC: {0}".format(mac_str))
 
     # Strips the MAC address of '-', ':', and '.' characters
     _strip_mac = lambda self, mac: self._pattern.sub("", mac)
