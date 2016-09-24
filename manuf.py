@@ -12,10 +12,11 @@
 # <http://www.gnu.org/licenses/>
 # <http://www.apache.org/licenses/>
 
+import argparse
 import re
 import sys
-from collections import namedtuple
 import urllib2
+from collections import namedtuple
 
 try:
     from cStringIO import StringIO
@@ -29,7 +30,7 @@ except ImportError:
 vendor = namedtuple('Vendor', ['manuf', 'comment'])
 
 class MacParser(object):
-    def  __init__(self, manuf_name="manuf"):
+    def  __init__(self, manuf_name="manuf", update=False):
         """Class that contains a parser for Wireshark's OUI database.
 
         Optimized for quick lookup performance by reading the entire file into
@@ -48,7 +49,8 @@ class MacParser(object):
 
         """
         self._manuf_name = manuf_name
-        self.update()
+        if update:
+            self.update()
         self.refresh()
 
     def refresh(self, manuf_name=None):
@@ -99,8 +101,6 @@ class MacParser(object):
     def update(self, manuf_url=None, manuf_name=None, refresh=True):
         """Update the Wireshark OUI database to the latest version.
 
-        Comments
-
         Args:
             manuf_url (str): URL pointing to OUI database. Defaults to database
                 located at code.wireshark.org.
@@ -124,7 +124,6 @@ class MacParser(object):
             response = urllib2.urlopen(manuf_url)
         except urllib2.URLError:
             raise urllib2.URLError("Failed downloading OUI database")
-
 
         # Parse the response
         if response.code is 200:
@@ -233,13 +232,21 @@ class MacParser(object):
     _bits_left = lambda self, mac_str: 48 - 4 * len(mac_str)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("manuf.py: Parser utility for Wireshark's OUI database.")
-        print("    Usage: manuf.py <mac-address> [<manuf-file-path>]")
-        sys.exit(0)
-    elif len(sys.argv) > 2:
-        parser = MacParser(sys.argv[2])
+    parser = argparse.ArgumentParser(
+        description="Parser utility for Wireshark's OUI database.")
+    parser.add_argument("-u", "--update",
+        help="update manuf file at manuf_file_path from the internet",
+        action="store_true")
+    parser.add_argument("mac_address", help="MAC address to check")
+    parser.add_argument('manuf_file_path', nargs='?',
+        help="manuf file path. Defaults to manuf in same directory")
+
+    args = parser.parse_args()
+    if args.manuf_file_path:
+        parser = MacParser(manuf_name=args.manuf_file_path, update=args.update)
     else:
-        parser = MacParser()
-    print(parser.get_all(sys.argv[1]))
+        parser = MacParser(update=args.update)
+
+    print(parser.get_all(args.mac_address))
+
     sys.exit(0)
