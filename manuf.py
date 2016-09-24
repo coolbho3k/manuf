@@ -3,20 +3,32 @@
 # manuf.py: Parser library for Wireshark's OUI database.
 # Copyright (c) 2016 Michael Huang
 #
-# This library is free software. It is dual licensed under the
-# terms of the GNU Lesser General Public License version 3.0
-# (or any later version) and the Apache License version 2.0.
+# This library is free software. It is dual licensed under the terms of the GNU Lesser General
+# Public License version 3.0 (or any later version) and the Apache License version 2.0.
 #
 # For more information, see:
 #
 # <http://www.gnu.org/licenses/>
 # <http://www.apache.org/licenses/>
+"""Parser library for Wireshark's OUI database.
 
+Converts MAC addresses into a manufacturer using Wireshark's OUI database.
+
+See README.md.
+
+"""
+from __future__ import print_function
+from collections import namedtuple
 import argparse
 import re
 import sys
-import urllib2
-from collections import namedtuple
+
+try:
+    from urllib2 import urlopen
+    from urllib2 import URLError
+except ImportError:
+    from urllib.request import urlopen
+    from urllib.error import URLError
 
 try:
     from cStringIO import StringIO
@@ -27,29 +39,29 @@ except ImportError:
         from io import StringIO
 
 # Vendor tuple
-vendor = namedtuple('Vendor', ['manuf', 'comment'])
+Vendor = namedtuple('Vendor', ['manuf', 'comment'])
 
 class MacParser(object):
+    """Class that contains a parser for Wireshark's OUI database.
+
+    Optimized for quick lookup performance by reading the entire file into memory on
+    initialization. Maps ranges of MAC addresses to manufacturers and comments (descriptions).
+    Contains full support for netmasks and other strange things in the database.
+
+    See https://www.wireshark.org/tools/oui-lookup.html
+
+    Args:
+        manuf_name (str): Location of the manuf database file. Defaults to "manuf" in the same
+            directory.
+        update (bool): Whether to update the manuf file automatically. Defaults to False.
+
+    Raises:
+        IOError: If manuf file could not be found.
+
+    """
+    MANUF_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
+
     def  __init__(self, manuf_name="manuf", update=False):
-        """Class that contains a parser for Wireshark's OUI database.
-
-        Optimized for quick lookup performance by reading the entire file into
-        memory on initialization. Maps ranges of MAC addresses to manufacturers
-        and comments (descriptions). Contains full support for netmasks and
-        other strange things in the database.
-
-        See https://www.wireshark.org/tools/oui-lookup.html
-
-        Args:
-            manuf_name (str): Location of the manuf database file. Defaults to
-                "manuf" in the same directory.
-            update (bool): Whether to update the manuf file automatically.
-                Defaults to False.
-
-        Raises:
-            IOError: If manuf file could not be found.
-
-        """
         self._manuf_name = manuf_name
         if update:
             self.update()
@@ -59,8 +71,8 @@ class MacParser(object):
         """Refresh/reload manuf database. Call this when manuf file is updated.
 
         Args:
-            manuf_name (str): Location of the manuf data base file. Defaults to
-                "manuf" in the same directory.
+            manuf_name (str): Location of the manuf data base file. Defaults to "manuf" in the
+                same directory.
 
         Raises:
             IOError: If manuf file could not be found.
@@ -68,8 +80,8 @@ class MacParser(object):
         """
         if not manuf_name:
             manuf_name = self._manuf_name
-        with open(manuf_name, "r") as f:
-            manuf_file = StringIO(f.read())
+        with open(manuf_name, "r") as read_file:
+            manuf_file = StringIO(read_file.read())
         self._masks = {}
 
         # Build mask -> result dict
@@ -92,9 +104,9 @@ class MacParser(object):
                     mask = mask_spec
 
             if len(com) > 1:
-                result = vendor(manuf=arr[1], comment=com[1].strip())
+                result = Vendor(manuf=arr[1], comment=com[1].strip())
             else:
-                result = vendor(manuf=arr[1], comment=None)
+                result = Vendor(manuf=arr[1], comment=None)
 
             self._masks[(mask, mac_int >> mask)] = result
 
@@ -104,12 +116,12 @@ class MacParser(object):
         """Update the Wireshark OUI database to the latest version.
 
         Args:
-            manuf_url (str): URL pointing to OUI database. Defaults to database
-                located at code.wireshark.org.
-            manuf_name (str): Location to store the new OUI database. Defaults
-                to "manuf" in the same directory.
-            refresh (bool): Refresh the database once updated. Defaults to
-                True. Uses database stored at manuf_name.
+            manuf_url (str): URL pointing to OUI database. Defaults to database located at
+                code.wireshark.org.
+            manuf_name (str): Location to store the new OUI database. Defaults to "manuf" in the
+                same directory.
+            refresh (bool): Refresh the database once updated. Defaults to True. Uses database
+                stored at manuf_name.
 
         Raises:
             URLError: If the download fails
@@ -117,45 +129,45 @@ class MacParser(object):
         """
 
         if not manuf_url:
-            manuf_url = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
+            manuf_url = self.MANUF_URL
         if not manuf_name:
             manuf_name = self._manuf_name
 
         # Retrieve the new database
         try:
-            response = urllib2.urlopen(manuf_url)
-        except urllib2.URLError:
-            raise urllib2.URLError("Failed downloading OUI database")
+            response = urlopen(manuf_url)
+        except URLError:
+            raise URLError("Failed downloading OUI database")
 
         # Parse the response
         if response.code is 200:
-            with open(manuf_name, "w") as f:
-                f.write(response.read())
+            with open(manuf_name, "wb") as write_file:
+                write_file.write(response.read())
             if refresh:
                 self.refresh(manuf_name)
         else:
             err = "{0} {1}".format(response.code, response.msg)
-            raise urllib2.URLError("Failed downloading database: {0}".format(err))
+            raise URLError("Failed downloading database: {0}".format(err))
 
         response.close()
 
-    def search(self, mac, max=1):
-        """Search for multiple vendor tuples possibly matching a MAC address.
+    def search(self, mac, maximum=1):
+        """Search for multiple Vendor tuples possibly matching a MAC address.
 
         Args:
             mac (str): MAC address in standard format.
-            max (Optional[int]): Maximum results to return. Defaults to 1.
+            maximum (int): Maximum results to return. Defaults to 1.
 
         Returns:
-            List of vendor namedtuples containing (manuf, comment), with
-            closest result first. May be empty if no results found.
+            List of Vendor namedtuples containing (manuf, comment), with closest result first. May
+            be empty if no results found.
 
         Raises:
             ValueError: If the MAC could not be parsed.
 
         """
         vendors = []
-        if max <= 0:
+        if maximum <= 0:
             return vendors
         mac_str = self._strip_mac(mac)
         mac_int = self._get_mac_int(mac_str)
@@ -165,19 +177,19 @@ class MacParser(object):
             result = self._masks.get((mask, mac_int >> mask))
             if result:
                 vendors.append(result)
-                if len(vendors) >= max:
+                if len(vendors) >= maximum:
                     break
         return vendors
 
     def get_all(self, mac):
-        """Get a vendor tuple containing (manuf, comment) from a MAC address.
+        """Get a Vendor tuple containing (manuf, comment) from a MAC address.
 
         Args:
             mac (str): MAC address in standard format.
 
         Returns:
-            vendor: Vendor namedtuple containing (manuf, comment). Either or
-            both may be None if not found.
+            vendor: Vendor namedtuple containing (manuf, comment). Either or both may be None if
+            not found.
 
         Raises:
             ValueError: If the MAC could not be parsed.
@@ -185,7 +197,7 @@ class MacParser(object):
         """
         vendors = self.search(mac)
         if len(vendors) == 0:
-            return vendor(manuf=None, comment=None)
+            return Vendor(manuf=None, comment=None)
         return vendors[0]
 
     def get_manuf(self, mac):
@@ -226,22 +238,27 @@ class MacParser(object):
         except ValueError:
             raise ValueError("Could not parse MAC: {0}".format(mac_str))
 
+    # Regular expression that matches '-', ':', and '.' characters
+    _pattern = re.compile(r"[-:\.]")
+
     # Strips the MAC address of '-', ':', and '.' characters
-    _strip_mac = lambda self, mac: self._pattern.sub("", mac)
-    _pattern = re.compile("[-:\.]")
+    def _strip_mac(self, mac):
+        return self._pattern.sub("", mac)
 
     # Gets the number of bits left in a mac string
-    _bits_left = lambda self, mac_str: 48 - 4 * len(mac_str)
+    @staticmethod
+    def _bits_left(mac_str):
+        return 48 - 4 * len(mac_str)
 
 def main():
-    argparser = argparse.ArgumentParser(
-        description="Parser utility for Wireshark's OUI database.")
+    """Simple command line wrapping for MacParser."""
+    argparser = argparse.ArgumentParser(description="Parser utility for Wireshark's OUI database.")
     argparser.add_argument("-u", "--update",
-        help="update manuf file at manuf_file_path from the internet",
-        action="store_true")
+                           help="update manuf file at manuf_file_path from the internet",
+                           action="store_true")
     argparser.add_argument("mac_address", help="MAC address to check")
     argparser.add_argument('manuf_file_path', nargs='?',
-        help="manuf file path. Defaults to manuf in same directory")
+                           help="manuf file path. Defaults to manuf in same directory")
 
     args = argparser.parse_args()
     if args.manuf_file_path:
