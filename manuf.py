@@ -34,15 +34,17 @@ class MacParser(object):
         """Class that contains a parser for Wireshark's OUI database.
 
         Optimized for quick lookup performance by reading the entire file into
-        memory on initialization. Maps ranges of MAC addresses to manufacturers and
-        comments (descriptions). Contains full support for netmasks and other
-        strange things in the database.
+        memory on initialization. Maps ranges of MAC addresses to manufacturers
+        and comments (descriptions). Contains full support for netmasks and
+        other strange things in the database.
 
         See https://www.wireshark.org/tools/oui-lookup.html
 
         Args:
             manuf_name (str): Location of the manuf database file. Defaults to
                 "manuf" in the same directory.
+            update (bool): Whether to update the manuf file automatically.
+                Defaults to False.
 
         Raises:
             IOError: If manuf file could not be found.
@@ -54,7 +56,7 @@ class MacParser(object):
         self.refresh()
 
     def refresh(self, manuf_name=None):
-        """Refresh/reload manuf database. Call this if database has been updated.
+        """Refresh/reload manuf database. Call this when manuf file is updated.
 
         Args:
             manuf_name (str): Location of the manuf data base file. Defaults to
@@ -104,10 +106,10 @@ class MacParser(object):
         Args:
             manuf_url (str): URL pointing to OUI database. Defaults to database
                 located at code.wireshark.org.
-            manuf_name (str): Location to store the new OUI database. Defaults to
-                "manuf" in the same directory.
-            refresh (bool): Refresh the database once updated. Defaults to True.
-                Uses database stored at manuf_name.
+            manuf_name (str): Location to store the new OUI database. Defaults
+                to "manuf" in the same directory.
+            refresh (bool): Refresh the database once updated. Defaults to
+                True. Uses database stored at manuf_name.
 
         Raises:
             URLError: If the download fails
@@ -145,8 +147,8 @@ class MacParser(object):
             max (Optional[int]): Maximum results to return. Defaults to 1.
 
         Returns:
-            List of vendor namedtuples containing (manuf, comment), with closest
-            result first. May be empty if no results found.
+            List of vendor namedtuples containing (manuf, comment), with
+            closest result first. May be empty if no results found.
 
         Raises:
             ValueError: If the MAC could not be parsed.
