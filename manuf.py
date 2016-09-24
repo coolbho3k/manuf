@@ -234,16 +234,16 @@ class MacParser(object):
     _bits_left = lambda self, mac_str: 48 - 4 * len(mac_str)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
+    argparser = argparse.ArgumentParser(
         description="Parser utility for Wireshark's OUI database.")
-    parser.add_argument("-u", "--update",
+    argparser.add_argument("-u", "--update",
         help="update manuf file at manuf_file_path from the internet",
         action="store_true")
-    parser.add_argument("mac_address", help="MAC address to check")
-    parser.add_argument('manuf_file_path', nargs='?',
+    argparser.add_argument("mac_address", help="MAC address to check")
+    argparser.add_argument('manuf_file_path', nargs='?',
         help="manuf file path. Defaults to manuf in same directory")
 
-    args = parser.parse_args()
+    args = argparser.parse_args()
     if args.manuf_file_path:
         parser = MacParser(manuf_name=args.manuf_file_path, update=args.update)
     else:
