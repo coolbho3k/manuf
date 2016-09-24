@@ -92,11 +92,11 @@ class MacParser(object):
                     mask = mask_spec
 
             if len(com) > 1:
-                result = vendor(manuf = arr[1], comment = com[1].strip())
+                result = vendor(manuf=arr[1], comment=com[1].strip())
             else:
-                result = vendor(manuf = arr[1], comment = None)
+                result = vendor(manuf=arr[1], comment=None)
 
-            self._masks[(mask,  mac_int >> mask)] = result
+            self._masks[(mask, mac_int >> mask)] = result
 
         manuf_file.close()
 
@@ -185,7 +185,7 @@ class MacParser(object):
         """
         vendors = self.search(mac)
         if len(vendors) == 0:
-            return vendor(manuf = None, comment = None)
+            return vendor(manuf=None, comment=None)
         return vendors[0]
 
     def get_manuf(self, mac):
@@ -233,7 +233,7 @@ class MacParser(object):
     # Gets the number of bits left in a mac string
     _bits_left = lambda self, mac_str: 48 - 4 * len(mac_str)
 
-if __name__ == "__main__":
+def main():
     argparser = argparse.ArgumentParser(
         description="Parser utility for Wireshark's OUI database.")
     argparser.add_argument("-u", "--update",
@@ -252,3 +252,6 @@ if __name__ == "__main__":
     print(parser.get_all(args.mac_address))
 
     sys.exit(0)
+
+if __name__ == "__main__":
+    main()
