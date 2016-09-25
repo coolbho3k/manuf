@@ -127,7 +127,6 @@ class MacParser(object):
             URLError: If the download fails
 
         """
-
         if not manuf_url:
             manuf_url = self.MANUF_URL
         if not manuf_name:
