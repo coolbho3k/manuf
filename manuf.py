@@ -188,7 +188,7 @@ class MacParser(object):
             mac (str): MAC address in standard format.
 
         Returns:
-            vendor: Vendor namedtuple containing (manuf, comment). Either or both may be None if
+            Vendor: Vendor namedtuple containing (manuf, comment). Either or both may be None if
             not found.
 
         Raises:
