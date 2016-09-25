@@ -253,20 +253,22 @@ class MacParser(object):
 def main():
     """Simple command line wrapping for MacParser."""
     argparser = argparse.ArgumentParser(description="Parser utility for Wireshark's OUI database.")
+    argparser.add_argument('-m', "--manuffile",
+                           help="manuf file path. Defaults to manuf in same directory",
+                           action="store")
     argparser.add_argument("-u", "--update",
-                           help="update manuf file at manuf_file_path from the internet",
+                           help="update manuf file from the internet",
                            action="store_true")
-    argparser.add_argument("mac_address", help="MAC address to check")
-    argparser.add_argument('manuf_file_path', nargs='?',
-                           help="manuf file path. Defaults to manuf in same directory")
+    argparser.add_argument("mac_address", nargs='?', help="MAC address to check")
 
     args = argparser.parse_args()
-    if args.manuf_file_path:
-        parser = MacParser(manuf_name=args.manuf_file_path, update=args.update)
+    if args.manuffile:
+        parser = MacParser(manuf_name=args.manuffile, update=args.update)
     else:
         parser = MacParser(update=args.update)
 
-    print(parser.get_all(args.mac_address))
+    if args.mac_address:
+        print(parser.get_all(args.mac_address))
 
     sys.exit(0)
 
