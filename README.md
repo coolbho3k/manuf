@@ -156,4 +156,7 @@ this repository, but will not be updated.
 The latest version of the manuf database can be found in the
 [Wireshark git repository](https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf).
 The database there is updated about once a week, so you may want to grab the
-latest version to use instead of using the one provided here.
+latest version to use instead of using the one provided here by using the
+--update flag on the command line:
+
+    python manuf.py --update 00:00:00
