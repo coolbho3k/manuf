@@ -6,29 +6,29 @@ class ManufTestCase(unittest.TestCase):
     def setUp(self):
         self.manuf = manuf.MacParser(manuf_name="test/manuf")
 
-    def test_update_shouldUpdate(self):
+    def test_update_update(self):
         self.manuf.update(manuf_name="test/manuf_update")
         assert os.path.exists("test/manuf_update")
         os.remove("test/manuf_update")
 
-    def test_getAll_whenMacValid_shouldGetVendor(self):
+    def test_getAll_whenMacValid_getVendor(self):
         v = self.manuf.get_all("00:00:00:00:00:00")
         self.assertEqual(v.manuf, "00:00:00")
         self.assertEqual(v.comment, "Officially Xerox, but 0:0:0:0:0:0 is more common")
 
-    def test_getManuf_shouldGetManuf(self):
+    def test_getManuf_getManuf(self):
         m = self.manuf.get_manuf("08:60:6E")
         v = self.manuf.get_all("08:60:6E")
         self.assertEqual(m, "AsustekC")
         self.assertEqual(m, v.manuf)
 
-    def test_getComment_shouldGetComment(self):
+    def test_getComment_getComment(self):
         c = self.manuf.get_comment("08:60:6E")
         v = self.manuf.get_all("08:60:6E")
         self.assertEqual(c, "ASUSTek COMPUTER INC.")
         self.assertEqual(c, v.comment)
 
-    def test_getAll_shouldSupportAllMacFormats(self):
+    def test_getAll_supportAllMacFormats(self):
         v1 = self.manuf.get_all("08:60:6E")
         v2 = self.manuf.get_all("08:60:6e:dd:dd:dd")
         v3 = self.manuf.get_all("08.60.6E.ab.cd.ef")
@@ -67,7 +67,7 @@ class ManufTestCase(unittest.TestCase):
         self.assertEqual(v2, v3)
         self.assertNotEqual(v3, v4)
 
-    def test_getAllWithComplexNetmask_shouldReturnCorrectMatch(self):
+    def test_getAllWithComplexNetmask_returnCorrectMatch(self):
         v1 = self.manuf.get_all("01:80:C2:00:00:2F")
         self.assertEqual(v1.manuf, None)
         self.assertEqual(v1.comment, None)
