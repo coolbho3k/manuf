@@ -1,6 +1,7 @@
 manuf.py
-[![Build Status](https://travis-ci.org/coolbho3k/manuf.svg?branch=master)](https://travis-ci.org/coolbho3k/manuf)
 ===
+
+[![Build Status](https://travis-ci.org/coolbho3k/manuf.svg?branch=master)](https://travis-ci.org/coolbho3k/manuf)
 
 Parser library for Wireshark's OUI database.
 ---
