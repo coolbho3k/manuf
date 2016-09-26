@@ -65,7 +65,8 @@ class MacParser(object):
         self._manuf_name = manuf_name
         if update:
             self.update()
-        self.refresh()
+        else:
+            self.refresh()
 
     def refresh(self, manuf_name=None):
         """Refresh/reload manuf database. Call this when manuf file is updated.
