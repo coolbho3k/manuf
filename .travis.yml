@@ -11,4 +11,4 @@ python:
   - "nightly"
   - "pypy"
   - "pypy3"
-script: python -m test.test_manuf
+script: python -m unittest test.test_manuf
