@@ -99,13 +99,13 @@ to any manufacturer.
     >>> p.get_manuf('01:80:C2:00:00:2F')
     >>> p.get_manuf('01:80:C2:00:00:30')
     'OAM-Multicast-DA-Class-1'
-    >>> p.get_manuf('00:1B:C5:01:00:37')
+    >>> p.get_manuf('01:80:C2:00:00:37')
     'OAM-Multicast-DA-Class-1'
-    >>> p.get_manuf('00:1B:C5:01:00:38')
+    >>> p.get_manuf('01:80:C2:00:00:38')
     'OAM-Multicast-DA-Class-2'
-    >>> p.get_manuf('00:1B:C5:01:00:3F')
+    >>> p.get_manuf('01:80:C2:00:00:3F')
     'OAM-Multicast-DA-Class-2'
-    >>> p.get_manuf('00:1B:C5:01:00:40')
+    >>> p.get_manuf('01:80:C2:00:00:40')
 
 Again, the official lookup tool fails here as well, with "01:80:C2:00:00:31"
 returning no results.
