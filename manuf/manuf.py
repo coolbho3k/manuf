@@ -81,7 +81,7 @@ class MacParser(object):
         """
         if not manuf_name:
             manuf_name = self._manuf_name
-        with open(manuf_name, "r") as read_file:
+        with open(manuf_name, "r", encoding="utf-8") as read_file:
             manuf_file = StringIO(read_file.read())
         self._masks = {}
 
@@ -141,7 +141,7 @@ class MacParser(object):
 
         # Parse the response
         if response.code is 200:
-            with open(manuf_name, "wb") as write_file:
+            with open(manuf_name, "wb", encoding="utf-8") as write_file:
                 write_file.write(response.read())
             if refresh:
                 self.refresh(manuf_name)
