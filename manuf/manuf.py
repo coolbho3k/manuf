@@ -22,6 +22,7 @@ from collections import namedtuple
 import argparse
 import re
 import sys
+import io
 
 try:
     from urllib2 import urlopen
@@ -81,7 +82,7 @@ class MacParser(object):
         """
         if not manuf_name:
             manuf_name = self._manuf_name
-        with open(manuf_name, "r", encoding="utf-8") as read_file:
+        with io.open(manuf_name, "r", encoding="utf-8") as read_file:
             manuf_file = StringIO(read_file.read())
         self._masks = {}
 
