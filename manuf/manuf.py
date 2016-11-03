@@ -141,7 +141,7 @@ class MacParser(object):
 
         # Parse the response
         if response.code is 200:
-            with open(manuf_name, "wb", encoding="utf-8") as write_file:
+            with open(manuf_name, "wb") as write_file:
                 write_file.write(response.read())
             if refresh:
                 self.refresh(manuf_name)
