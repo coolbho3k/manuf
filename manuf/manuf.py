@@ -22,6 +22,7 @@ from collections import namedtuple
 import argparse
 import re
 import sys
+import io
 
 try:
     from urllib2 import urlopen
@@ -31,12 +32,9 @@ except ImportError:
     from urllib.error import URLError
 
 try:
-    from cStringIO import StringIO
+    from StringIO import StringIO
 except ImportError:
-    try:
-        from StringIO import StringIO
-    except ImportError:
-        from io import StringIO
+    from io import StringIO
 
 # Vendor tuple
 Vendor = namedtuple('Vendor', ['manuf', 'comment'])
@@ -81,7 +79,7 @@ class MacParser(object):
         """
         if not manuf_name:
             manuf_name = self._manuf_name
-        with open(manuf_name, "r") as read_file:
+        with io.open(manuf_name, "r", encoding="utf-8") as read_file:
             manuf_file = StringIO(read_file.read())
         self._masks = {}
 
