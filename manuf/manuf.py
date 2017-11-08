@@ -58,6 +58,7 @@ class MacParser(object):
 
     """
     MANUF_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
+    WFA_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=wka"
 
     def  __init__(self, manuf_name="manuf", update=False):
         self._manuf_name = manuf_name
@@ -119,7 +120,7 @@ class MacParser(object):
 
         manuf_file.close()
 
-    def update(self, manuf_url=None, manuf_name=None, refresh=True):
+    def update(self, manuf_url=None, manuf_name=None, wfa_url=None, refresh=True):
         """Update the Wireshark OUI database to the latest version.
 
         Args:
@@ -148,6 +149,27 @@ class MacParser(object):
         # Parse the response
         if response.code is 200:
             with open(manuf_name, "wb") as write_file:
+                write_file.write(response.read())
+            if refresh:
+                self.refresh(manuf_name)
+        else:
+            err = "{0} {1}".format(response.code, response.msg)
+            raise URLError("Failed downloading database: {0}".format(err))
+
+        response.close()
+        
+        if not wfa_url:
+            wfa_url = self.WFA_URL
+            
+        # Append WFA to new database
+        try:
+            response = urlopen(wfa_url)
+        except URLError:
+            raise URLError("Failed downloading WFA database")
+
+        # Parse the response
+        if response.code is 200:
+            with open(manuf_name, "ab") as write_file:
                 write_file.write(response.read())
             if refresh:
                 self.refresh(manuf_name)
