@@ -58,6 +58,7 @@ class MacParser(object):
 
     """
     MANUF_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
+    WFA_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=wka"
 
     def  __init__(self, manuf_name="manuf", update=False):
         self._manuf_name = manuf_name
@@ -85,10 +86,16 @@ class MacParser(object):
 
         # Build mask -> result dict
         for line in manuf_file:
-            com = line.split("#", 1)
-            arr = com[0].split()
+            first_char = line.strip("")[0] if len(line) > 0 else None
+            if "#" == first_char:
+                continue
+            line_clean = line.replace("\t\t", "\t")
+            line_clean = re.sub(r" {2,}", "\t", line_clean)
+            com = line_clean.split("#", 1) # split to (1) mac/subnet->shortName->longName & (2) comments
+            arr = com[0].split("\t")    # split mac/subnet, hortName & longName by its tab-delimiter (instead of whitespace)
+            arr = [e.strip() for e in arr]
 
-            if len(arr) < 1:
+            if len(arr) < 1 or arr[0] in ("\n", ""):
                 continue
 
             parts = arr[0].split("/")
@@ -104,6 +111,8 @@ class MacParser(object):
 
             if len(com) > 1:
                 result = Vendor(manuf=arr[1], comment=com[1].strip())
+            elif len(arr) > 2:
+                result = Vendor(manuf=arr[1], comment=arr[2])
             else:
                 result = Vendor(manuf=arr[1], comment=None)
 
@@ -111,7 +120,7 @@ class MacParser(object):
 
         manuf_file.close()
 
-    def update(self, manuf_url=None, manuf_name=None, refresh=True):
+    def update(self, manuf_url=None, manuf_name=None, wfa_url=None, refresh=True):
         """Update the Wireshark OUI database to the latest version.
 
         Args:
@@ -140,6 +149,27 @@ class MacParser(object):
         # Parse the response
         if response.code is 200:
             with open(manuf_name, "wb") as write_file:
+                write_file.write(response.read())
+            if refresh:
+                self.refresh(manuf_name)
+        else:
+            err = "{0} {1}".format(response.code, response.msg)
+            raise URLError("Failed downloading database: {0}".format(err))
+
+        response.close()
+        
+        if not wfa_url:
+            wfa_url = self.WFA_URL
+            
+        # Append WFA to new database
+        try:
+            response = urlopen(wfa_url)
+        except URLError:
+            raise URLError("Failed downloading WFA database")
+
+        # Parse the response
+        if response.code is 200:
+            with open(manuf_name, "ab") as write_file:
                 write_file.write(response.read())
             if refresh:
                 self.refresh(manuf_name)
