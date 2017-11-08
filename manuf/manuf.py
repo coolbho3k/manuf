@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # manuf.py: Parser library for Wireshark's OUI database.
-# Copyright (c) 2016 Michael Huang
+# Copyright (c) 2017 Michael Huang
 #
 # This library is free software. It is dual licensed under the terms of the GNU Lesser General
 # Public License version 3.0 (or any later version) and the Apache License version 2.0.
@@ -85,10 +85,16 @@ class MacParser(object):
 
         # Build mask -> result dict
         for line in manuf_file:
-            com = line.split("#", 1)
-            arr = com[0].split()
+            first_char = line.strip("")[0] if len(line) > 0 else None
+            if "#" == first_char:
+                continue
+            line_clean = line.replace("\t\t", "\t")
+            line_clean = re.sub(r" {2,}", "\t", line_clean)
+            com = line_clean.split("#", 1) # split to (1) mac/subnet->shortName->longName & (2) comments
+            arr = com[0].split("\t")    # split mac/subnet, hortName & longName by its tab-delimiter (instead of whitespace)
+            arr = [e.strip() for e in arr]
 
-            if len(arr) < 1:
+            if len(arr) < 1 or arr[0] in ("\n", ""):
                 continue
 
             parts = arr[0].split("/")
@@ -104,6 +110,8 @@ class MacParser(object):
 
             if len(com) > 1:
                 result = Vendor(manuf=arr[1], comment=com[1].strip())
+            elif len(arr) > 2:
+                result = Vendor(manuf=arr[1], comment=arr[2])
             else:
                 result = Vendor(manuf=arr[1], comment=None)
 
