@@ -31,19 +31,30 @@ As a library:
     >>> p.get_comment('BC:EE:7B:00:00:00')
     'ASUSTek COMPUTER INC.'
 
-On the command line. Make sure manuf is in the same directory:
+On the command line:
 
-    $ python manuf.py BC:EE:7B:00:00:00
+    $ python -m manuf BC:EE:7B:00:00:00
+    Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
+   
+Alternatively, if the library has been installed i.e. using pip 
+
+    $ manuf BC:EE:7B:00:00:00
     Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
     
 Use a manuf file in a custom location:
 
-    $ python manuf.py --manuf ~/manuf BC:EE:7B:00:00:00
+    $ manuf --manuf ~/manuf BC:EE:7B:00:00:00
     Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
 
 Automatically update the manuf file from Wireshark's git:
 
-    $ python manuf.py --update --manuf ~/manuf BC:EE:7B:00:00:00
+    $ manuf --update BC:EE:7B:00:00:00
+    Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
+
+Note, that this command will update the manuf file bundled with this package. If you do not wish to 
+modify this, or do not have permissions to do so, you must specify a custom manuf file to perform an update.
+
+    $ manuf --update --manuf ~/manuf BC:EE:7B:00:00:00
     Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
 
 Advantages
