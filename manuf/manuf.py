@@ -35,6 +35,8 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
+import importlib
+import os
 
 # Vendor tuple
 Vendor = namedtuple('Vendor', ['manuf', 'manuf_long', 'comment'])
@@ -60,8 +62,8 @@ class MacParser(object):
     MANUF_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
     WFA_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=wka"                                                                                           
 
-    def  __init__(self, manuf_name="manuf", update=False):
-        self._manuf_name = manuf_name
+    def  __init__(self, manuf_name=None, update=False):
+        self._manuf_name = manuf_name or self.get_packaged_manuf_file_path()
         if update:
             self.update()
         else:
@@ -287,12 +289,26 @@ class MacParser(object):
     def _bits_left(mac_str):
         return 48 - 4 * len(mac_str)
 
+    @staticmethod
+    def get_packaged_manuf_file_path():
+        """
+        returns the path to manuf file bundled with the package.
+        :return:
+        """
+        package_init_path = importlib.import_module(__package__).__file__
+        package_path = os.path.abspath(os.path.join(package_init_path, os.pardir))
+        manuf_file_path = os.path.join(package_path, 'manuf')
+        return manuf_file_path
+
+
 def main(*input_args):
     """Simple command line wrapping for MacParser."""
     argparser = argparse.ArgumentParser(description="Parser utility for Wireshark's OUI database.")
     argparser.add_argument('-m', "--manuf",
-                           help="manuf file path. Defaults to manuf in same directory",
-                           action="store")
+                           help="manuf file path. Defaults to manuf file packaged with manuf.py installation",
+                           action="store",
+                           default=None)
+
     argparser.add_argument("-u", "--update",
                            help="update manuf file from the internet",
                            action="store_true")
@@ -300,10 +316,7 @@ def main(*input_args):
 
     input_args = input_args or None  # if main is called with explicit args parse these - else use sysargs
     args = argparser.parse_args(args=input_args)
-    if args.manuf:
-        parser = MacParser(manuf_name=args.manuf, update=args.update)
-    else:
-        parser = MacParser(update=args.update)
+    parser = MacParser(manuf_name=args.manuf, update=args.update)
 
     if args.mac_address:
         print(parser.get_all(args.mac_address))
