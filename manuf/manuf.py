@@ -287,7 +287,7 @@ class MacParser(object):
     def _bits_left(mac_str):
         return 48 - 4 * len(mac_str)
 
-def main():
+def main(*input_args):
     """Simple command line wrapping for MacParser."""
     argparser = argparse.ArgumentParser(description="Parser utility for Wireshark's OUI database.")
     argparser.add_argument('-m', "--manuf",
@@ -298,7 +298,8 @@ def main():
                            action="store_true")
     argparser.add_argument("mac_address", nargs='?', help="MAC address to check")
 
-    args = argparser.parse_args()
+    input_args = input_args or None  # if main is called with explicit args parse these - else use sysargs
+    args = argparser.parse_args(args=input_args)
     if args.manuf:
         parser = MacParser(manuf_name=args.manuf, update=args.update)
     else:
