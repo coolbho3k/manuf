@@ -22,8 +22,8 @@ Usage
 
 As a library:
 
-    >>> import manuf
-    >>> p = manuf.MacParser()
+    >>> from manuf import manuf
+    >>> p = manuf.MacParser(update=True)
     >>> p.get_all('BC:EE:7B:00:00:00')
     Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
     >>> p.get_manuf('BC:EE:7B:00:00:00')
