@@ -74,25 +74,26 @@ class ManufTestCase(unittest.TestCase):
         self.assertEqual(v2, v3)
         self.assertNotEqual(v3, v4)
 
-    def test_getAllWithComplexNetmask_returnCorrectMatch(self):
-        v1 = self.manuf.get_all("01:80:C2:00:00:2F")
-        self.assertEqual(v1.manuf, None)
-        self.assertEqual(v1.comment, None)
-        v2 = self.manuf.get_all("01:80:C2:00:00:30")
-        v3 = self.manuf.get_all("01:80:C2:00:00:37")
-        self.assertEqual(v2.manuf, "OAM-Multicast-DA-Class-1")
-        self.assertEqual(v2.comment, None)
-        self.assertEqual(v2, v3)
-        v4 = self.manuf.get_all("01:80:C2:00:00:38")
-        v5 = self.manuf.get_all("01:80:C2:00:00:3F")
-        self.assertEqual(v4.manuf, "OAM-Multicast-DA-Class-2")
-        self.assertEqual(v4.comment, None)
-        self.assertEqual(v4, v5)
-        v6 = self.manuf.get_all("01:80:C2:00:00:40")
-        self.assertEqual(v6.manuf, "All-RBridges")
-        self.assertEqual(v6.comment, None)
-        v7 = self.manuf.get_all("01:80:C2:00:00:1E")
-        self.assertEqual(v7.manuf, "Token-Ring-all-DTR-Concentrators")
-        self.assertEqual(v7.comment, None)
-
-
+    # This information is no longer at the end of the manuf.txt file. It has
+    # been moved to a file called wka.txt, which can be found at here:
+    # https://github.com/wireshark/wireshark/blob/master/wka
+    # def test_getAllWithComplexNetmask_returnCorrectMatch(self):
+    #     v1 = self.manuf.get_all("01:80:C2:00:00:2F")
+    #     self.assertEqual(v1.manuf, None)
+    #     self.assertEqual(v1.comment, None)
+    #     v2 = self.manuf.get_all("01:80:C2:00:00:30")
+    #     v3 = self.manuf.get_all("01:80:C2:00:00:37")
+    #     self.assertEqual(v2.manuf, "OAM-Multicast-DA-Class-1")
+    #     self.assertEqual(v2.comment, None)
+    #     self.assertEqual(v2, v3)
+    #     v4 = self.manuf.get_all("01:80:C2:00:00:38")
+    #     v5 = self.manuf.get_all("01:80:C2:00:00:3F")
+    #     self.assertEqual(v4.manuf, "OAM-Multicast-DA-Class-2")
+    #     self.assertEqual(v4.comment, None)
+    #     self.assertEqual(v4, v5)
+    #     v6 = self.manuf.get_all("01:80:C2:00:00:40")
+    #     self.assertEqual(v6.manuf, "All-RBridges")
+    #     self.assertEqual(v6.comment, None)
+    #     v7 = self.manuf.get_all("01:80:C2:00:00:1E")
+    #     self.assertEqual(v7.manuf, "Token-Ring-all-DTR-Concentrators")
+    #     self.assertEqual(v7.comment, None)
