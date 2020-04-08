@@ -25,9 +25,11 @@ import sys
 import io
 
 try:
+    from urllib2 import Request
     from urllib2 import urlopen
     from urllib2 import URLError
 except ImportError:
+    from urllib.request import Request
     from urllib.request import urlopen
     from urllib.error import URLError
 
@@ -139,7 +141,7 @@ class MacParser(object):
 
         # Retrieve the new database
         try:
-            response = urlopen(manuf_url)
+            response = urlopen(Request(manuf_url, headers={'User-Agent': 'Mozilla'}))
         except URLError:
             raise URLError("Failed downloading OUI database")
 
@@ -159,7 +161,7 @@ class MacParser(object):
             
         # Append WFA to new database
         try:
-            response = urlopen(wfa_url)
+            response = urlopen(Request(wfa_url, headers={'User-Agent': 'Mozilla'}))
         except URLError:
             raise URLError("Failed downloading WFA database")
 
