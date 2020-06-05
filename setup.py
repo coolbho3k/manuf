@@ -1,9 +1,10 @@
 from setuptools import setup
-
+# The text of the README file
+README = open("./README.md",'r').read()
 setup(
     name = 'manuf',
     packages = ['manuf'],
-    version = '1.0.0',
+    version = '1.1.0',
     description = 'Parser library for Wireshark\'s OUI database',
     author = 'Michael Huang',
     url = 'https://github.com/coolbho3k/manuf/',
@@ -17,5 +18,7 @@ setup(
     package_data = {
         'manuf': ['manuf']
     },
+    long_description    =   README,
+    long_description_content_type   =   "text/markdown"
 )
 
