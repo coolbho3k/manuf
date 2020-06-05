@@ -21,7 +21,7 @@ class ManufTestCase(unittest.TestCase):
     def test_getManuf_getManuf(self):
         m = self.manuf.get_manuf("08:60:6E")
         v = self.manuf.get_all("08:60:6E")
-        self.assertEqual(m, "AsustekC")
+        self.assertEqual(m.lower(), "AsustekC".lower())
         self.assertEqual(m, v.manuf)
 
     def test_getManufLong_getManufLong(self):
@@ -40,7 +40,7 @@ class ManufTestCase(unittest.TestCase):
         v2 = self.manuf.get_all("08:60:6e:dd:dd:dd")
         v3 = self.manuf.get_all("08.60.6E.ab.cd.ef")
         v4 = self.manuf.get_all("08-60-6E")
-        self.assertEqual(v1.manuf, "AsustekC")
+        self.assertEqual(v1.manuf.lower(), "AsustekC".lower())
         self.assertEqual(v1.manuf_long, "ASUSTek COMPUTER INC.")
         self.assertEqual(v1, v2)
         self.assertEqual(v1, v3)
@@ -54,7 +54,7 @@ class ManufTestCase(unittest.TestCase):
         v5 = self.manuf.get_all("00:1B:C5:0E:00:00")
         v6 = self.manuf.get_all("00:1B:C5:FF:00:00")
         v7 = self.manuf.get_all("00:1B:C5:01:00:00")
-        self.assertEqual(v1.manuf, "IeeeRegi")
+        self.assertEqual(v1.manuf.lower(), "IeeeRegi".lower())
         self.assertEqual(v1.manuf_long, "IEEE Registration Authority")
         self.assertEqual(v1, v2)
         self.assertEqual(v1, v3)
