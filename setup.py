@@ -1,6 +1,7 @@
 from setuptools import setup
 # The text of the README file
 README = open("./README.md",'r').read()
+# Setup
 setup(
     name = 'manuf',
     packages = ['manuf'],
@@ -21,4 +22,6 @@ setup(
     long_description    =   README,
     long_description_content_type   =   "text/markdown"
 )
-
+# To publish package run:
+# $ python setup.py build check sdist bdist_wheel
+# $ twine upload --verbose dist/*

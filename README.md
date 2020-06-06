@@ -1,7 +1,8 @@
-manuf.py
+manuf
 ===
 
-[![Build Status](https://travis-ci.org/coolbho3k/manuf.svg?branch=master)](https://travis-ci.org/coolbho3k/manuf)
+[![Build Status](https://github.com/coolbho3k/manuf/workflows/test/badge.svg)](https://github.com/coolbho3k/manuf/actions)
+[![Build Status](https://badge.fury.io/py/manuf.svg)](https://pypi.org/project/manuf/)
 
 Parser library for Wireshark's OUI database.
 ---
@@ -65,9 +66,16 @@ modify this, or do not have permissions to do so, you must specify a custom manu
     $ manuf --update --manuf ~/manuf BC:EE:7B:00:00:00
     Vendor(manuf='AsustekC', comment='ASUSTek COMPUTER INC.')
 
-Alternatively you can call the program with `python -m manuf` if installed on your system or `./manuf/manuf.py` from the package folder.
+Alternatively you can call the program with:
 
-Advantages
+    python -m manuf
+or by executung the `manuf.py` script directly
+
+```bash
+./manuf/manuf.py # From the install folder
+```
+
+Features and advantages of manuf
 ---
 
 Note: the examples use the manuf file provided in the first commit, 9a180b5.
@@ -183,3 +191,8 @@ latest version to use instead of using the one provided here by using the
 --update flag on the command line:
 
     manuf --update
+
+Run tests
+---
+
+    python -m unittest manuf.test.test_manuf
