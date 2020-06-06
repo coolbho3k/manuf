@@ -22,6 +22,8 @@ setup(
     long_description    =   README,
     long_description_content_type   =   "text/markdown"
 )
+
 # To publish package run:
-# $ python setup.py build check sdist bdist_wheel
-# $ twine upload --verbose dist/*
+# $ rm -rf dist #Delete all previous build that you might not want to upload
+# $ python setup.py build check sdist bdist_wheel #Build
+# $ twine upload --verbose dist/* #Upload
