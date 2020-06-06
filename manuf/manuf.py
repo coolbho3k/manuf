@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # manuf.py: Parser library for Wireshark's OUI database.
-# Copyright (c) 2017 Michael Huang
+# Copyright (c) 2019 Michael Huang
 #
 # This library is free software. It is dual licensed under the terms of the GNU Lesser General
 # Public License version 3.0 (or any later version) and the Apache License version 2.0.
@@ -62,7 +62,7 @@ class MacParser(object):
 
     """
     MANUF_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
-    WFA_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=wka"                                                                                           
+    WFA_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=wka"
 
     def  __init__(self, manuf_name=None, update=False):
         self._manuf_name = manuf_name or self.get_packaged_manuf_file_path()
@@ -158,7 +158,7 @@ class MacParser(object):
         response.close()
         if not wfa_url:
             wfa_url = self.WFA_URL
-            
+
         # Append WFA to new database
         try:
             response = urlopen(Request(wfa_url, headers={'User-Agent': 'Mozilla'}))
@@ -175,7 +175,7 @@ class MacParser(object):
             err = "{0} {1}".format(response.code, response.msg)
             raise URLError("Failed downloading database: {0}".format(err))
 
-        response.close()                       
+        response.close()
 
     def search(self, mac, maximum=1):
         """Search for multiple Vendor tuples possibly matching a MAC address.
@@ -297,7 +297,10 @@ class MacParser(object):
         returns the path to manuf file bundled with the package.
         :return:
         """
-        package_init_path = importlib.import_module(__package__).__file__
+        if __package__ is None or __package__ == "":
+            package_init_path = __file__
+        else:
+            package_init_path = importlib.import_module(__package__).__file__
         package_path = os.path.abspath(os.path.join(package_init_path, os.pardir))
         manuf_file_path = os.path.join(package_path, 'manuf')
         return manuf_file_path
