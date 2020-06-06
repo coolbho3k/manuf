@@ -69,7 +69,7 @@ modify this, or do not have permissions to do so, you must specify a custom manu
 Alternatively you can call the program with:
 
     python -m manuf
-or by executung the `manuf.py` script directly
+or by executing the `manuf.py` script directly
 
 ```bash
 ./manuf/manuf.py # From the install folder
