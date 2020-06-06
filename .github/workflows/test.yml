@@ -1,0 +1,35 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: test
+on: pull_request
+jobs: 
+  test:
+    name: ${{ matrix.os }} Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }} 
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        python-version: ['2.7','3.5','3.6','3.7','3.8']
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run tests
+        run: |        
+          python -m pip install --upgrade pip
+          pip install pylint codecov pytest pytest-cov
+          pytest --cov=./ --cov-report=xml
+      
+      # TODO : Need to setup secrets.CODECOV_TOKEN on github repository
+      # - name: Upload code coverage
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     file: ./coverage.xml
+      #     name: manuf-code-coverage
+      #     yml: ./codecov.yml 
+      #     fail_ci_if_error: true
