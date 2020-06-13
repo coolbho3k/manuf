@@ -21,7 +21,7 @@ Written by Michael Huang (coolbho3k).
 Install
 ---
 
-#### With PyPi
+#### With [PyPi](https://pypi.org/)
 
     pip install manuf
 
@@ -30,6 +30,9 @@ Install
     git clone https://github.com/coolbho3k/manuf
     cd manuf
     python setup.py install
+
+#### From [AUR](https://aur.archlinux.org/) via AUR wrapper ["yay"](https://github.com/Jguer/yay):
+    yay -S python-manuf
 
 Usage
 ---
