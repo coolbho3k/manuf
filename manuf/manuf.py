@@ -62,7 +62,7 @@ class MacParser(object):
 
     """
     MANUF_URL = "https://gitlab.com/wireshark/wireshark/raw/master/manuf"
-    WFA_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=wka"
+    WFA_URL = "https://gitlab.com/wireshark/wireshark/raw/master/wka"
 
     def  __init__(self, manuf_name=None, update=False):
         self._manuf_name = manuf_name or self.get_packaged_manuf_file_path()
