@@ -3,13 +3,14 @@ import os
 import unittest
 
 class ManufTestCase(unittest.TestCase):
-    MANUF_URL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf"
+    MANUF_URL = "https://gitlab.com/wireshark/wireshark/raw/master/manuf"
+    WFA_URL = "https://gitlab.com/wireshark/wireshark/raw/master/wka"
 
     def setUp(self):
         self.manuf = manuf.MacParser(manuf_name="manuf/test/manuf")
     #
     def test_update_update(self):
-        self.manuf.update(manuf_url=self.MANUF_URL, manuf_name="manuf_update")
+        self.manuf.update(manuf_url=self.MANUF_URL, wfa_url=self.WFA_URL, manuf_name="manuf_update")
         assert os.path.exists("manuf_update")
         os.remove("manuf_update")
 
