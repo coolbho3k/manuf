@@ -142,8 +142,8 @@ class MacParser(object):
         # Retrieve the new database
         try:
             response = urlopen(Request(manuf_url, headers={'User-Agent': 'Mozilla'}))
-        except URLError:
-            raise URLError("Failed downloading OUI database")
+        except URLError as e:
+            raise URLError("Failed downloading OUI database") from e
 
         # Parse the response
         if response.code == 200:
@@ -162,8 +162,8 @@ class MacParser(object):
         # Append WFA to new database
         try:
             response = urlopen(Request(wfa_url, headers={'User-Agent': 'Mozilla'}))
-        except URLError:
-            raise URLError("Failed downloading WFA database")
+        except URLError as e:
+            raise URLError("Failed downloading WFA database") from e
 
         # Parse the response
         if response.code == 200:
