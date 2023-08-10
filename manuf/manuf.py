@@ -61,7 +61,7 @@ class MacParser(object):
         IOError: If manuf file could not be found.
 
     """
-    MANUF_URL = "https://gitlab.com/wireshark/wireshark/raw/master/manuf"
+    MANUF_URL = "https://www.wireshark.org/download/automated/data/manuf"
     WFA_URL = "https://gitlab.com/wireshark/wireshark/raw/master/wka"
 
     def  __init__(self, manuf_name=None, update=False):
@@ -142,8 +142,8 @@ class MacParser(object):
         # Retrieve the new database
         try:
             response = urlopen(Request(manuf_url, headers={'User-Agent': 'Mozilla'}))
-        except URLError:
-            raise URLError("Failed downloading OUI database")
+        except URLError as e:
+            raise URLError("Failed downloading OUI database") from e
 
         # Parse the response
         if response.code == 200:
@@ -162,8 +162,8 @@ class MacParser(object):
         # Append WFA to new database
         try:
             response = urlopen(Request(wfa_url, headers={'User-Agent': 'Mozilla'}))
-        except URLError:
-            raise URLError("Failed downloading WFA database")
+        except URLError as e:
+            raise URLError("Failed downloading WFA database") from e
 
         # Parse the response
         if response.code == 200:
